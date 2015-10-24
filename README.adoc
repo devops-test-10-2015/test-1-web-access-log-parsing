@@ -38,18 +38,18 @@ To produce the reports from the logs you need the following installed:
 |===
 
 
-=== Parse the data
-
-    ./scripts/run_logstash.sh
-    ./scripts/write_to_log.sh
-
 === Create the report for stats per minute
+
+The report is created using a couple of different tasks so these are pulled together with Gradle. You do not need to have
+Gradle installed as it is being run using the wrapper.
 
 Running the parser against the JSON version of the log data will produce a report to standard out with the metrics for each minute.
 
 The report format is line delimited JSON.
 
-    ./gradlew -q parseLogJson -PjsonData=test_data/6_200s_over_3_minutes.json
+The `jsonData` property can be supplied if you wish to override the value in `gradle.properties`.
+
+    ./gradlew -q createAccessLogReport [-PjsonData=test_data/6_200s_over_3_minutes.json]
 
 === Testing
 
