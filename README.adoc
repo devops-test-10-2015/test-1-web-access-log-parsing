@@ -18,7 +18,7 @@ Solution developed with this data : https://s3-eu-west-1.amazonaws.com/skyscanne
 
 As http://httpd.apache.org/docs/2.2/mod/mod_log_config.html[Defined here] : "%a %l %u %t \"%r\" %>s %b %D"
 
-Parse with https://github.com/logstash-plugins/logstash-patterns-core/blob/master/patterns/grok-patterns[Logstash] using `%{COMMONAPACHELOG}`.
+Parse with https://github.com/logstash-plugins/logstash-patterns-core/blob/master/patterns/grok-patterns[Logstash] using `%{COMMONAPACHELOG} %{BASE10NUM:time_to_serve}`.
 
 == Decisions
 
@@ -36,7 +36,7 @@ for testing.
 
 === Parse the data
 
-    logstash -f config/logstash-parse-access.conf
+    ./scripts/run_logstash.sh
     ./scripts/write_to_log.sh
 
 == Plan
