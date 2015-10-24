@@ -1,0 +1,21 @@
+{
+  "size": 0,
+  "aggs": {
+
+    "group_by_time": {
+      "terms": {
+        "field": "timestamp",
+        "order": {
+          "timestamp": "desc"
+        }
+      }
+    },
+
+    "group_by_verb": {
+      "terms": {
+        "field": "verb"
+      }
+    }
+
+  }
+}

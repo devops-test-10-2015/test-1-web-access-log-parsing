@@ -55,5 +55,10 @@ for testing.
 To get the information from the data try these solutions in order:
 
 * Logstash metrics plugin
+** The default seems to be that this will give you rates based on when entries are added to the logs. I cannot find a way to use the timestamp in the log.
+** I have found a way to set the Logstash timestamp to the timestamp value from the original log but the rates are per second.
+** I looked through all the other filter plugins and could not find anything suitable.
 * Elastic Search
+** I tried this using aggregation but I could not work out how to get the values a per minute.
+** I am going to give up and go with the scripting option.
 * take the json output from logstash and do write a script
