@@ -9,8 +9,7 @@ Consume web access log files and emit the following metrics:
 * Mean response time per minute
 * MBs sent per minute
 
-
-== Data
+=== Data
 
 Solution developed with this data : https://s3-eu-west-1.amazonaws.com/skyscanner-recruitement-resources/devops/access-log-example/c930ecf4b0a4426e619bddd8752c475ea772427db13eb92ee6a1a79b248ec0dc/access.log[access.log]
 
@@ -20,6 +19,42 @@ As http://httpd.apache.org/docs/2.2/mod/mod_log_config.html[Defined here] : "%a 
 
 Parse with https://github.com/logstash-plugins/logstash-patterns-core/blob/master/patterns/grok-patterns[Logstash] using `%{COMMONAPACHELOG} %{BASE10NUM:time_to_serve}`.
 
+
+== How to run
+
+=== Environment prerequisite
+
+To produce the reports from the logs you need the following installed:
+
+|===
+|Technology | Version tested aginst
+
+|Java
+|openjdk version "1.8.0_60"
+
+|Logstash
+|1.5.4
+
+|===
+
+
+=== Parse the data
+
+    ./scripts/run_logstash.sh
+    ./scripts/write_to_log.sh
+
+=== Create the report for stats per minute
+
+Running the parser against the JSON version of the log data will produce a report to standard out with the metrics for each minute.
+
+The report format is line delimited JSON.
+
+    ./gradlew -q parseLogJson -PjsonData=test_data/6_200s_over_3_minutes.json
+
+=== Testing
+
+    ./gradlew test
+
 == Decisions
 
 === Technology
@@ -27,17 +62,9 @@ Parse with https://github.com/logstash-plugins/logstash-patterns-core/blob/maste
 Going with Logstash for the parsing as parsing Apache logs is a standard task
 for Logstash and is tried and tested.
 
-== Testing
+I would like to have done the stats gathering in Elastic Search but I could not
+make that work in the available time.
 
-Take a small part of the log and manually count the up the values and use that
-for testing.
-
-== Running
-
-=== Parse the data
-
-    ./scripts/run_logstash.sh
-    ./scripts/write_to_log.sh
 
 == Plan
 
@@ -45,9 +72,9 @@ for testing.
 * Write the requirements
 * Decide technology for solution
 * Create logstash conf to parse the logs
-* Done =========================================
 * Set up testing
 * Get the numbers
+* Done =========================================
 * Add any missing documentation
 
 === Getting the numbers
@@ -62,3 +89,8 @@ To get the information from the data try these solutions in order:
 ** I tried this using aggregation but I could not work out how to get the values a per minute.
 ** I am going to give up and go with the scripting option.
 * take the json output from logstash and do write a script
+
+=== Testing
+
+Take a small part of the log and manually count the up the values and use that
+for testing.

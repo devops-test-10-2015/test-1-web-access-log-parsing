@@ -14,18 +14,20 @@ repositories {
 
 dependencies {
     compile 'org.codehaus.groovy:groovy-all:2.4.4'
-
+    compile 'joda-time:joda-time:2.9'
     testCompile 'org.spockframework:spock-core:1.0-groovy-2.4'
     testCompile 'junit:junit:4.12'
     testCompile "org.spockframework:spock-core:1.0-groovy-2.3"
 }
 
-task runScript(type: JavaExec) {
-    description 'Run Groovy script'
-    main = 'org.kevinhcross.tools.ParseApacheLogJson'
+mainClassName = 'org.kevinhcross.tools.ParseApacheLogJson'
+
+task parseLogJson(type: JavaExec) {
+    description 'Run the Groovy script to parse the logs. You must supply a -PjsonData property with the path to the json data'
+    main = mainClassName
     classpath = sourceSets.main.runtimeClasspath
-    if (project.hasProperty('scriptArg')) {
-        args project.getProperty('scriptArg')
+    if (project.hasProperty('jsonData')) {
+        args project.getProperty('jsonData')
     }
 }
 

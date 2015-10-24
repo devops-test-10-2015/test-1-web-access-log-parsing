@@ -4,3 +4,4 @@ test-1-web-access-log-parsing.ipr
 test-1-web-access-log-parsing.iws
 .gradle
 /build/
+.gradletasknamecache
