@@ -51,8 +51,9 @@ The `jsonData` property can be supplied if you wish to override the value in `gr
 
     ./gradlew -q createAccessLogReport [-PapacheLog=test_data/20_200s_over_2_minutes.log]
 
+To run the report on the provided data do this:
 
-
+    ./gradlew getDataFile
     ./gradlew -q createAccessLogReport -PapacheLog=data/access.log
 
 === Testing

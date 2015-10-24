@@ -7,6 +7,7 @@ apply plugin: 'application'
 ext {
     logstashConfig = "config/logstash-parse-access.conf"
     outputDir = "output"
+    dataUrl = 'https://s3-eu-west-1.amazonaws.com/skyscanner-recruitement-resources/devops/access-log-example/c930ecf4b0a4426e619bddd8752c475ea772427db13eb92ee6a1a79b248ec0dc/access.log'
 }
 
 // In this section you declare where to find the dependencies of your project
@@ -39,14 +40,26 @@ task parseLogsWithLogstash (type:Exec, dependsOn: ['makeOutputDir'], description
 
 }
 
+task getDataFile() << {
+    def file = new File('data/access.log').newOutputStream()
+    file << new URL(dataUrl).openStream()
+    file.close()
+}
+
 mainClassName = 'org.kevinhcross.tools.ParseApacheLogJson'
 
-//task createAccessLogReport(type: JavaExec, dependsOn: ['parseLogsWithLogstash']) {
-task createAccessLogReport(type: JavaExec) {
+task createAccessLogReport(type: JavaExec, dependsOn: ['parseLogsWithLogstash']) {
     description 'Run the Groovy script to parse the logs. You can supply a -PjsonData property with the path to the json data'
     main = mainClassName
     classpath = sourceSets.main.runtimeClasspath
     args project.getProperty('jsonData')
+}
+
+
+test {
+    testLogging {
+        showStandardStreams = true
+    }
 }
 
 task wrapper(type: Wrapper) {

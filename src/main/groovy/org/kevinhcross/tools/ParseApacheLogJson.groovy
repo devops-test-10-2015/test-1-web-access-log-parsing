@@ -10,9 +10,7 @@ class ParseApacheLogJson {
 
   File jsonDataFile
   JsonSlurper slurper = new JsonSlurper()
-  List<Object> logEntryList = []
-  DateTime currentTimeStamp
-  List<MinuteStats> minuteStatsList = []
+  Map<String, MinuteStats> minuteStatsMap = [:]
 
   public static void main(args) {
     if (args.size() < 1) {
@@ -34,34 +32,24 @@ class ParseApacheLogJson {
   void parseLogs() {
     jsonDataFile.eachLine { line ->
       def result = slurper.parseText(line)
-      DateTime dt = fmt.parseDateTime(result."@timestamp")
-
-      if (currentTimeStamp == null){
-        currentTimeStamp = dt
-      }
-      if (dt.getMinuteOfDay() != currentTimeStamp.getMinuteOfDay() || dt.getDayOfYear() != currentTimeStamp.getDayOfYear()) {
-        processMinuteDataAndDump()
-      }
-      logEntryList << result
-      currentTimeStamp = dt
+      processMinuteData(result)
     }
-    // Dump the last batch of data
-    processMinuteDataAndDump()
   }
 
-  void processMinuteDataAndDump() {
-    MinuteStats minuteStats = new MinuteStats(currentTimeStamp: currentTimeStamp.toString("YYYY-MM-dd HH:mm Z"))
-    minuteStatsList << minuteStats
-    logEntryList.each { le ->
-      minuteStats.addToRequestCounts(le.response)
-      minuteStats.addToRequestTimes(le.time_to_serve)
-      minuteStats.addToBytes(le.bytes)
+  void processMinuteData(def le) {
+    String minuteStr = fmt.parseDateTime(le."@timestamp").toString("YYYY-MM-dd HH:mm Z")
+    MinuteStats minuteStats = minuteStatsMap.get(minuteStr)
+    if (minuteStats == null) {
+      minuteStats = new MinuteStats(currentTimeStamp: minuteStr)
+      minuteStatsMap.put(minuteStr, minuteStats)
     }
-    logEntryList = []
+    minuteStats.addToRequestCounts(le.response)
+    minuteStats.addToRequestTimes(le.time_to_serve)
+    minuteStats.addToBytes(le.bytes)
   }
 
   void printReport() {
-    minuteStatsList.each { minuteStats ->
+    minuteStatsMap.each { minuteStr, minuteStats ->
       println minuteStats
     }
   }

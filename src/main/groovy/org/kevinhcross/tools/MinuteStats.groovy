@@ -20,19 +20,20 @@ class MinuteStats {
 
   void addToRequestTimes(String requestTimeStr) {
     if(requestTimeStr == null || requestTimeStr == 'null') {
-      println "WARNING: null value found"
+      println "WARNING: null time value found"
       requestTimes << 0
     } else {
       requestTimes << requestTimeStr.toInteger()
     }
   }
 
-  void addToBytes(String mb) {
-    if(mb == null || mb == 'null') {
-      println "WARNING: null value found"
-      bytesServedList << 0
+  boolean addToBytes(String mb) {
+    // Some records do not have this data
+    if(mb == null || mb == 'null' || mb == '-') {
+      return false
     } else {
       bytesServedList << mb.toInteger()
+      return true
     }
   }
 
@@ -47,10 +48,13 @@ class MinuteStats {
     return total/requestTimes.size()
   }
 
-  BigDecimal getMegaBytes() {
+  BigDecimal getMeanMegaBytes() {
     BigDecimal bytesTotal = new BigDecimal(0)
     bytesServedList.each { bytes ->
       bytesTotal += bytes
+    }
+    if (bytesServedList.size() == 0) {
+      return new BigDecimal(0)
     }
     return bytesTotal/bytesServedList.size()
   }
@@ -62,7 +66,7 @@ class MinuteStats {
       successCount successCount
       errorCount errorCount
       meanResponseTime meanResponseTime
-      megaBytes megaBytes
+      meanMegaBytes meanMegaBytes
     }
 
     return builder.toString()
