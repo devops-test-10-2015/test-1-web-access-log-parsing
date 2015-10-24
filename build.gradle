@@ -41,7 +41,8 @@ task parseLogsWithLogstash (type:Exec, dependsOn: ['makeOutputDir'], description
 
 mainClassName = 'org.kevinhcross.tools.ParseApacheLogJson'
 
-task createAccessLogReport(type: JavaExec, dependsOn: ['parseLogsWithLogstash']) {
+//task createAccessLogReport(type: JavaExec, dependsOn: ['parseLogsWithLogstash']) {
+task createAccessLogReport(type: JavaExec) {
     description 'Run the Groovy script to parse the logs. You can supply a -PjsonData property with the path to the json data'
     main = mainClassName
     classpath = sourceSets.main.runtimeClasspath

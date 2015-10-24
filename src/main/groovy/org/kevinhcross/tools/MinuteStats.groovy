@@ -19,11 +19,21 @@ class MinuteStats {
   }
 
   void addToRequestTimes(String requestTimeStr) {
-    requestTimes << requestTimeStr.toInteger()
+    if(requestTimeStr == null || requestTimeStr == 'null') {
+      println "WARNING: null value found"
+      requestTimes << 0
+    } else {
+      requestTimes << requestTimeStr.toInteger()
+    }
   }
 
   void addToBytes(String mb) {
-    bytesServedList << mb.toInteger()
+    if(mb == null || mb == 'null') {
+      println "WARNING: null value found"
+      bytesServedList << 0
+    } else {
+      bytesServedList << mb.toInteger()
+    }
   }
 
   BigDecimal getMeanResponseTime() {
