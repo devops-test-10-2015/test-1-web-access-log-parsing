@@ -12,28 +12,48 @@ Consume web access log files and emit the following metrics:
 
 == Data
 
-https://s3-eu-west-1.amazonaws.com/skyscanner-recruitement-resources/devops/access-log-example/c930ecf4b0a4426e619bddd8752c475ea772427db13eb92ee6a1a79b248ec0dc/access.log
+Solution developed with this data : https://s3-eu-west-1.amazonaws.com/skyscanner-recruitement-resources/devops/access-log-example/c930ecf4b0a4426e619bddd8752c475ea772427db13eb92ee6a1a79b248ec0dc/access.log[access.log]
 
 === Log format
 
-http://httpd.apache.org/docs/2.2/mod/mod_log_config.html
+As http://httpd.apache.org/docs/2.2/mod/mod_log_config.html[Defined here] : "%a %l %u %t \"%r\" %>s %b %D"
 
-"%a %l %u %t \"%r\" %>s %b %D"
+Parse with https://github.com/logstash-plugins/logstash-patterns-core/blob/master/patterns/grok-patterns[Logstash] using `%{COMMONAPACHELOG}`.
+
+== Decisions
+
+=== Technology
+
+Going with Logstash for the parsing as parsing Apache logs is a standard task
+for Logstash and is tried and tested.
+
+== Testing
+
+Take a small part of the log and manually count the up the values and use that
+for testing.
+
+== Running
+
+=== Parse the data
+
+    logstash -f config/logstash-parse-access.conf
+    ./scripts/write_to_log.sh
 
 == Plan
 
 * Get the sample logs
 * Write the requirements
+* Decide technology for solution
+* Create logstash conf to parse the logs
 * Done =========================================
-* Testing
-** Take a small part of the log and manually count the up the values and use that for testing.
-* Solution - go with ELK stack
-** Create logstash conf to parse the logs
-** Try to get the results with the metrics plugin
-** If that is not possible then look at elastic search
-** If that is going to take too much time then consider a script that uses the output from logstash
-* Documentation
+* Set up testing
+* Get the numbers
+* Add any missing documentation
 
+=== Getting the numbers
 
+To get the information from the data try these solutions in order:
 
-
+* Logstash metrics plugin
+* Elastic Search
+* take the json output from logstash and do write a script
