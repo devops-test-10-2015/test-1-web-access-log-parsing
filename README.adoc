@@ -1,5 +1,6 @@
 = Test 2 - Web Access Log Parsing
 
+
 == Requirements
 
 Consume web access log files and emit the following metrics:
@@ -99,3 +100,29 @@ To get the information from the data try these solutions in order:
 
 Take a small part of the log and manually count the up the values and use that
 for testing.
+
+
+== Issues
+
+=== Missing minuts
+
+I seem to be missing some minutes. This might be because some records have the
+same time with a different offset but I need to take a closer loo.
+
+        kevin at kevin-fedora in ~/projects/skyscanner/test-1-web-access-log-parsing/data on master [dirty]
+        ± cut -f2 -d'[' access.log | cut -f1 -d']' | cut -f1-3 -d':' | sort -u | wc                                                                                           Sat 24 Oct 22:05:28 BST 2015 [untracked]
+            367     367    6606
+
+        kevin at kevin-fedora in ~/projects/skyscanner/test-1-web-access-log-parsing/data on master [dirty]
+        ± cd ..                                                                                                                                                               Sat 24 Oct 22:05:35 BST 2015 [untracked]
+
+        kevin at kevin-fedora in ~/projects/skyscanner/test-1-web-access-log-parsing on master [dirty]
+        ± grep minute out7 | wc                                                                                                                                               Sat 24 Oct 22:05:39 BST 2015 [untracked]
+            308     924   43132
+
+I need to create a task that will verify the input minutes match the output minutes
+
+=== Download
+
+Add a onlyif to the file download that checks if a file of that name is there
+so that it can be a dependency
